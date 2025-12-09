@@ -1,0 +1,1 @@
+# python-mini-task-12-aoi-shanyrak
