@@ -1,0 +1,7 @@
+README.md
+power_matrix.c
+setup.py
+power_matrix.egg-info/PKG-INFO
+power_matrix.egg-info/SOURCES.txt
+power_matrix.egg-info/dependency_links.txt
+power_matrix.egg-info/top_level.txt
