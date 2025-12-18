@@ -35,10 +35,13 @@ static PyObject* copy_matrix(PyObject* matrix) {
   for (Py_ssize_t i = 0; i < rows; i++) {
     PyObject* row = PyList_GetItem(matrix, i);
     PyObject* copy_row = PyList_New(rows);
+
     for (Py_ssize_t j = 0; j < rows; j++) {
       PyObject* elem = PyList_GetItem(row, j);
-      Py_INCREF(elem);
-      PyList_SetItem(copy_row, j, elem);
+      double val = PyFloat_AsDouble(elem);
+
+      PyObject* elem_val = PyFloat_FromDouble(val);
+      PyList_SetItem(copy_row, j, elem_val);
     }
     PyList_SetItem(copy, i, copy_row);
   }
@@ -56,7 +59,7 @@ static PyObject* powerMatrix(PyObject* self, PyObject* args) {
     return NULL;
   Py_ssize_t rows = PyList_Size(matrix);
   if (rows == 0)
-    return NULL;
+    return PyList_New(0);
 
   for (Py_ssize_t i = 0; i < rows; i++) {
     PyObject* row = PyList_GetItem(matrix, i);
@@ -88,10 +91,19 @@ static PyObject* powerMatrix(PyObject* self, PyObject* args) {
     return copy_matrix(matrix);
   }
   PyObject* result;
+  PyObject* old_temp;
   PyObject* temp = copy_matrix(matrix);
-  for (size_t i = 0; i < (size_t) (power - 1); i++) {
+
+  size_t iterations = (size_t) power - 1;
+  for (size_t i = 0; i < iterations; i++) {
     result = multy_matrix(temp, matrix);
+    if (!result) {
+      Py_DECREF(temp);
+      return NULL;
+    }
+    old_temp = temp;
     temp = result;
+    Py_DECREF(old_temp);
   }
   return temp;
 }
